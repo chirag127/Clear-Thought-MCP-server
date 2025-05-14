@@ -1,6 +1,6 @@
 {
   "name": "clear-thought-mcp-server",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A Model Context Protocol (MCP) server that provides systematic thinking, mental models, and debugging approaches for enhanced problem-solving capabilities",
   "type": "module",
   "main": "dist/index.js",

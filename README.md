@@ -66,6 +66,38 @@ A Model Context Protocol (MCP) server that provides systematic thinking, mental 
 -   Criteria weighting
 -   Risk and uncertainty handling
 
+### Metacognitive Monitoring
+
+-   Knowledge boundary assessment
+-   Claim certainty evaluation
+-   Reasoning bias detection
+-   Confidence calibration
+-   Uncertainty identification
+
+### Scientific Method
+
+-   Structured hypothesis testing
+-   Variable identification
+-   Prediction formulation
+-   Experimental design
+-   Evidence evaluation
+
+### Structured Argumentation
+
+-   Formal dialectical reasoning
+-   Thesis-antithesis-synthesis
+-   Argument strength analysis
+-   Premise evaluation
+-   Logical structure mapping
+
+### Visual Reasoning
+
+-   Diagrammatic representation
+-   Visual problem-solving
+-   Spatial relationship analysis
+-   Conceptual mapping
+-   Visual insight generation
+
 ## Prerequisites
 
 -   Node.js 18.x or higher
@@ -252,6 +284,74 @@ Example scenarios:
 -   Technology selection
 -   Resource allocation
 -   Strategic planning
+
+### Metacognitive Monitoring
+
+Best suited for:
+
+-   Assessing knowledge boundaries
+-   Evaluating claim certainty
+-   Detecting reasoning biases
+-   Calibrating confidence
+-   Identifying areas of uncertainty
+
+Example scenarios:
+
+-   Evaluating expertise in unfamiliar domains
+-   Assessing confidence in predictions
+-   Identifying potential biases in analysis
+-   Determining when to seek additional information
+
+### Scientific Method
+
+Best suited for:
+
+-   Systematic hypothesis testing
+-   Empirical investigation
+-   Causal analysis
+-   Evidence-based reasoning
+-   Iterative refinement of understanding
+
+Example scenarios:
+
+-   Investigating system behavior
+-   Testing causal relationships
+-   Evaluating competing explanations
+-   Designing controlled experiments
+
+### Structured Argumentation
+
+Best suited for:
+
+-   Formal dialectical reasoning
+-   Analyzing complex debates
+-   Evaluating competing positions
+-   Synthesizing diverse viewpoints
+-   Constructing logical arguments
+
+Example scenarios:
+
+-   Evaluating the strength of arguments
+-   Identifying logical fallacies
+-   Constructing persuasive cases
+-   Resolving conflicting perspectives
+
+### Visual Reasoning
+
+Best suited for:
+
+-   Spatial problem-solving
+-   Conceptual mapping
+-   Pattern recognition
+-   Relationship visualization
+-   Complex system modeling
+
+Example scenarios:
+
+-   Diagramming system architecture
+-   Visualizing data relationships
+-   Mapping conceptual spaces
+-   Creating visual explanations
 
 Note: These are suggestions rather than rules. Tools can be used in any order or combination that best serves your needs.
 
