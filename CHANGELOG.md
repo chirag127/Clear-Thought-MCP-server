@@ -5,6 +5,12 @@ All notable changes to the Clear Thought MCP Server will be documented in this f
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2025-05-15 03:31:44 (IST)
+
+### Fixed
+
+-   Fixed content type validation error in all tool handlers by changing response type from "application/json" to "text"
+
 ## [1.1.0] - 2025-05-15 03:20:24 (IST)
 
 ### Added
