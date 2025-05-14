@@ -108,8 +108,8 @@ A Model Context Protocol (MCP) server that provides systematic thinking, mental 
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/chirag127/clear-thought-mcp-server.git
-cd clear-thought-mcp-server
+git clone https://github.com/chirag127/thinking-mcp-server.git
+cd thinking-mcp-server
 ```
 
 2. Install dependencies:
