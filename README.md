@@ -1,0 +1,2 @@
+# thinking mcp server
+
