@@ -1,5 +1,7 @@
 # Clear Thought MCP Server
 
+[![smithery badge](https://smithery.ai/badge/@chirag127/clear-thought-mcp-server)](https://smithery.ai/server/@chirag127/clear-thought-mcp-server)
+
 A Model Context Protocol (MCP) server that provides systematic thinking, mental models, and debugging approaches for enhanced problem-solving capabilities.
 
 ## Features
@@ -104,6 +106,14 @@ A Model Context Protocol (MCP) server that provides systematic thinking, mental 
 -   npm 9.x or higher
 
 ## Installation
+
+### Installing via Smithery
+
+To install clear-thought-mcp-server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@chirag127/clear-thought-mcp-server):
+
+```bash
+npx -y @smithery/cli install @chirag127/clear-thought-mcp-server --client claude
+```
 
 1. Clone the repository:
 
