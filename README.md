@@ -1,6 +1,8 @@
 # Clear Thought MCP Server
 
-[![smithery badge](https://smithery.ai/badge/@chirag127/clear-thought-mcp-server)](https://smithery.ai/server/@chirag127/clear-thought-mcp-server)
+[![smithery badge](https://smithery.ai/badge/@chirag127/clear-thought-mcp-server)](https://smithery.ai/server/@chirag127/clear-thought-mcp-server) [![Stars](https://img.shields.io/github/stars/chirag127/Clear-Thought-MCP-server?style=flat)](https://github.com/chirag127/Clear-Thought-MCP-server/stargazers) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+**Live:** https://Clear-Thought-MCP-server.oriz.in
 
 A Model Context Protocol (MCP) server that provides systematic thinking, mental models, and debugging approaches for enhanced problem-solving capabilities.
 
