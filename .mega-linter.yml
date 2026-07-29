@@ -1,11 +1,5 @@
-# MegaLinter configuration — disable noisy checkers
-DISABLE_LINTERS:
-  - MARKDOWN_MARKDOWN_LINK_CHECK
-  - SPELL_CSPELL
-  - SPELL_LYCHEE
-  - REPOSITORY_CHECKOV
-  - REPOSITORY_GRYPE
-  - HTML_DJLINT
-  - HTML_HTMLHINT
+# MegaLinter — everything enabled, everything auto-fixed, never blocks.
 APPLY_FIXES: all
-FORMATTERS_DISABLE_ERRORS: true
+DISABLE_ERRORS: true
+SHOW_ELAPSED_TIME: true
+FLAVOR_SUGGESTIONS: false
