@@ -5,6 +5,23 @@ All notable changes to the Clear Thought MCP Server will be documented in this f
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] - 2026-08-12
+### Changed
+- chore(deps): add Dependabot config; ignore @chirag127/* path deps
+- ci: add auto-issue-triage, release-notes, changelog via chirag127/workflows
+- feat: migrate to MCP SDK v2, add stochastic thinking tool, full test suite + CI
+- ci: enable all linters with auto-fix, remove disables
+- docs: add stars/license badges and live link to README top
+- chore: remove clutter file llm.txt
+- chore: remove clutter file clear thought.txt
+- chore: remove clutter file ERROR.MD
+- Create CNAME
+- ci: add MegaLinter config to disable noisy checkers
+- fix: CVE-2025-66414 security vulnerability
+- ci: switch MegaLinter from cupcake to all flavor (covers all 69 languages)
+- ci: add MegaLinter auto-fix workflow (cupcake flavor)
+- chore(license): add MIT (2026-07-04 mass relicense)
+
 ## [1.1.2] - 2025-05-15 03:40:23 (IST)
 
 ### Fixed
