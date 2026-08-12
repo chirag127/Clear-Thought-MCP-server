@@ -1,0 +1,14 @@
+name: changelog
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - ".github/workflows/**"
+      - "CHANGELOG.md"
+  workflow_dispatch:
+jobs:
+  changelog:
+    uses: chirag127/workflows/.github/workflows/changelog.yml@main
+    secrets: inherit
+    permissions:
+      contents: write

@@ -1,0 +1,12 @@
+name: auto-issue-triage
+on:
+  issues:
+    types: [opened]
+jobs:
+  triage:
+    uses: chirag127/workflows/.github/workflows/auto-issue-triage.yml@main
+    with:
+      components: "mcp,tools,thinking,sdk,docs,ci,deps"
+    secrets: inherit
+    permissions:
+      issues: write
