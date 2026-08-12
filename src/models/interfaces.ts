@@ -317,6 +317,42 @@ export interface ArgumentData {
     )[];
 }
 
+// Stochastic Thinking
+export interface StochasticVariable {
+    name: string;
+    distribution: 'uniform' | 'normal' | 'bernoulli' | 'poisson' | 'exponential' | 'custom';
+    parameters: Record<string, number>;
+    description?: string;
+}
+
+export interface ProbabilisticScenario {
+    id: string;
+    description: string;
+    probability: number;
+    outcome: string;
+    impact?: 'positive' | 'negative' | 'neutral';
+    impactMagnitude?: number;
+}
+
+export interface StochasticThinkingData {
+    problem: string;
+    stage: 'problem-framing' | 'variable-identification' | 'scenario-generation' | 'probability-estimation' | 'sensitivity-analysis' | 'decision-recommendation';
+    variables?: StochasticVariable[];
+    scenarios?: ProbabilisticScenario[];
+    priorBeliefs?: string;
+    evidence?: string[];
+    posteriorBeliefs?: string;
+    expectedValue?: number;
+    variance?: number;
+    confidenceInterval?: { lower: number; upper: number; confidence: number };
+    monteCarloIterations?: number;
+    sensitivityRanking?: Array<{ variable: string; impact: number }>;
+    recommendation?: string;
+    thinkingId: string;
+    iteration: number;
+    nextStageNeeded: boolean;
+}
+
 // Visual Reasoning
 export interface VisualElement {
     id: string;

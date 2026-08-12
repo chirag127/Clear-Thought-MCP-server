@@ -1,3 +1,4 @@
+import { CallToolResult } from '@modelcontextprotocol/server';
 import { ProgrammingParadigmData } from '../models/interfaces.js';
 import chalk from 'chalk';
 
@@ -61,7 +62,7 @@ export class ProgrammingParadigmServer {
     return output;
   }
 
-  public processParadigm(input: unknown): { content: Array<{ type: string; text: string }>; isError?: boolean } {
+  public processParadigm(input: unknown): CallToolResult {
     try {
       const validatedInput = this.validateParadigmData(input);
       const formattedOutput = this.formatParadigmOutput(validatedInput);
@@ -69,7 +70,7 @@ export class ProgrammingParadigmServer {
 
       return {
         content: [{
-          type: "text",
+          type: "text" as const,
           text: JSON.stringify({
             paradigmName: validatedInput.paradigmName,
             status: 'success',
@@ -81,7 +82,7 @@ export class ProgrammingParadigmServer {
     } catch (error) {
       return {
         content: [{
-          type: "text",
+          type: "text" as const,
           text: JSON.stringify({
             error: error instanceof Error ? error.message : String(error),
             status: 'failed'

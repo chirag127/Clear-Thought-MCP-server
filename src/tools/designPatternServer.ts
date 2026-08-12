@@ -1,3 +1,4 @@
+import { CallToolResult } from '@modelcontextprotocol/server';
 import { DesignPatternData } from '../models/interfaces.js';
 import chalk from 'chalk';
 
@@ -61,7 +62,7 @@ export class DesignPatternServer {
     return output;
   }
 
-  public processPattern(input: unknown): { content: Array<{ type: string; text: string }>; isError?: boolean } {
+  public processPattern(input: unknown): CallToolResult {
     try {
       const validatedInput = this.validatePatternData(input);
       const formattedOutput = this.formatPatternOutput(validatedInput);
@@ -69,7 +70,7 @@ export class DesignPatternServer {
 
       return {
         content: [{
-          type: "text",
+          type: "text" as const,
           text: JSON.stringify({
             patternName: validatedInput.patternName,
             status: 'success',
@@ -81,7 +82,7 @@ export class DesignPatternServer {
     } catch (error) {
       return {
         content: [{
-          type: "text",
+          type: "text" as const,
           text: JSON.stringify({
             error: error instanceof Error ? error.message : String(error),
             status: 'failed'

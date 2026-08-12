@@ -1,3 +1,4 @@
+import { CallToolResult } from '@modelcontextprotocol/server';
 import { MetacognitiveMonitoringData } from '../models/interfaces.js';
 import chalk from 'chalk';
 
@@ -108,7 +109,7 @@ export class MetacognitiveMonitoringServer {
     return output;
   }
 
-  public processMetacognitiveMonitoring(input: unknown): { content: Array<{ type: string; text: string }>; isError?: boolean } {
+  public processMetacognitiveMonitoring(input: unknown): CallToolResult {
     try {
       const validatedData = this.validateInputData(input);
       const formattedOutput = this.formatOutput(validatedData);
@@ -116,7 +117,7 @@ export class MetacognitiveMonitoringServer {
 
       return {
         content: [{
-          type: "text",
+          type: "text" as const,
           text: JSON.stringify({
             task: validatedData.task,
             stage: validatedData.stage,
@@ -131,7 +132,7 @@ export class MetacognitiveMonitoringServer {
     } catch (error) {
       return {
         content: [{
-          type: "text",
+          type: "text" as const,
           text: JSON.stringify({
             error: error instanceof Error ? error.message : String(error),
             status: 'failed'

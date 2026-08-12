@@ -1,3 +1,4 @@
+import { CallToolResult } from '@modelcontextprotocol/server';
 import { DebuggingApproachData } from '../models/interfaces.js';
 import chalk from 'chalk';
 
@@ -45,7 +46,7 @@ export class DebuggingApproachServer {
     return output;
   }
 
-  public processApproach(input: unknown): { content: Array<{ type: string; text: string }>; isError?: boolean } {
+  public processApproach(input: unknown): CallToolResult {
     try {
       const validatedInput = this.validateApproachData(input);
       const formattedOutput = this.formatApproachOutput(validatedInput);
@@ -53,7 +54,7 @@ export class DebuggingApproachServer {
 
       return {
         content: [{
-          type: "text",
+          type: "text" as const,
           text: JSON.stringify({
             approachName: validatedInput.approachName,
             status: 'success',
@@ -65,7 +66,7 @@ export class DebuggingApproachServer {
     } catch (error) {
       return {
         content: [{
-          type: "text",
+          type: "text" as const,
           text: JSON.stringify({
             error: error instanceof Error ? error.message : String(error),
             status: 'failed'

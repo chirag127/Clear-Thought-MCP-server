@@ -1,3 +1,4 @@
+import { CallToolResult } from '@modelcontextprotocol/server';
 import { ArgumentData } from '../models/interfaces.js';
 import chalk from 'chalk';
 
@@ -81,7 +82,7 @@ export class StructuredArgumentationServer {
     return output;
   }
 
-  public processStructuredArgumentation(input: unknown): { content: Array<{ type: string; text: string }>; isError?: boolean } {
+  public processStructuredArgumentation(input: unknown): CallToolResult {
     try {
       const validatedData = this.validateInputData(input);
       const processedData: ArgumentData = {
@@ -98,7 +99,7 @@ export class StructuredArgumentationServer {
 
       return {
         content: [{
-          type: "text",
+          type: "text" as const,
           text: JSON.stringify({
             argumentType: processedData.argumentType,
             claim: processedData.claim,
@@ -112,7 +113,7 @@ export class StructuredArgumentationServer {
     } catch (error) {
       return {
         content: [{
-          type: "text",
+          type: "text" as const,
           text: JSON.stringify({
             error: error instanceof Error ? error.message : String(error),
             status: 'failed'

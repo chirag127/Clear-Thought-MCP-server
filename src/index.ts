@@ -1,14 +1,7 @@
 #!/usr/bin/env node
 
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import {
-    CallToolRequestSchema,
-    ListToolsRequestSchema,
-    Tool,
-    McpError,
-    ErrorCode,
-} from "@modelcontextprotocol/sdk/types.js";
+import { StdioServerTransport } from "@modelcontextprotocol/server/stdio";
+import { Server, Tool, ProtocolError, ProtocolErrorCode } from "@modelcontextprotocol/server";
 import chalk from "chalk";
 
 // Import server classes
@@ -23,6 +16,7 @@ import { MetacognitiveMonitoringServer } from "./tools/metacognitiveMonitoringSe
 import { ScientificMethodServer } from "./tools/scientificMethodServer.js";
 import { StructuredArgumentationServer } from "./tools/structuredArgumentationServer.js";
 import { VisualReasoningServer } from "./tools/visualReasoningServer.js";
+import { StochasticThinkingServer } from "./tools/stochasticThinkingServer.js";
 
 // Tool Definitions
 const MENTAL_MODEL_TOOL: Tool = {
@@ -974,7 +968,102 @@ It supports various visual elements and operations to facilitate insight generat
     },
 };
 
-// Server Instances
+const STOCHASTIC_THINKING_TOOL: Tool = {
+    name: "stochasticthinking",
+    description: `A tool for probabilistic reasoning and stochastic analysis of uncertain problems.
+Guides structured reasoning through probability estimation, scenario generation,
+Bayesian updating, Monte Carlo thinking, and sensitivity analysis.
+
+Stages:
+- problem-framing: Define the uncertain problem space
+- variable-identification: Identify stochastic variables and their distributions
+- scenario-generation: Generate weighted probabilistic scenarios
+- probability-estimation: Estimate and update probabilities (Bayesian)
+- sensitivity-analysis: Rank variables by impact on outcome
+- decision-recommendation: Recommend action under uncertainty
+
+Use for: risk analysis, forecasting, decision-making under uncertainty,
+expected-value reasoning, confidence interval estimation.`,
+    inputSchema: {
+        type: "object",
+        properties: {
+            problem: { type: "string" },
+            stage: {
+                type: "string",
+                enum: [
+                    "problem-framing",
+                    "variable-identification",
+                    "scenario-generation",
+                    "probability-estimation",
+                    "sensitivity-analysis",
+                    "decision-recommendation",
+                ],
+            },
+            variables: {
+                type: "array",
+                items: {
+                    type: "object",
+                    properties: {
+                        name: { type: "string" },
+                        distribution: {
+                            type: "string",
+                            enum: ["uniform", "normal", "bernoulli", "poisson", "exponential", "custom"],
+                        },
+                        parameters: { type: "object", additionalProperties: { type: "number" } },
+                        description: { type: "string" },
+                    },
+                    required: ["name", "distribution", "parameters"],
+                },
+            },
+            scenarios: {
+                type: "array",
+                items: {
+                    type: "object",
+                    properties: {
+                        id: { type: "string" },
+                        description: { type: "string" },
+                        probability: { type: "number", minimum: 0, maximum: 1 },
+                        outcome: { type: "string" },
+                        impact: { type: "string", enum: ["positive", "negative", "neutral"] },
+                        impactMagnitude: { type: "number" },
+                    },
+                    required: ["id", "description", "probability", "outcome"],
+                },
+            },
+            priorBeliefs: { type: "string" },
+            evidence: { type: "array", items: { type: "string" } },
+            posteriorBeliefs: { type: "string" },
+            expectedValue: { type: "number" },
+            variance: { type: "number" },
+            confidenceInterval: {
+                type: "object",
+                properties: {
+                    lower: { type: "number" },
+                    upper: { type: "number" },
+                    confidence: { type: "number", minimum: 0, maximum: 1 },
+                },
+                required: ["lower", "upper", "confidence"],
+            },
+            monteCarloIterations: { type: "number", minimum: 1 },
+            sensitivityRanking: {
+                type: "array",
+                items: {
+                    type: "object",
+                    properties: {
+                        variable: { type: "string" },
+                        impact: { type: "number" },
+                    },
+                    required: ["variable", "impact"],
+                },
+            },
+            recommendation: { type: "string" },
+            thinkingId: { type: "string" },
+            iteration: { type: "number", minimum: 0 },
+            nextStageNeeded: { type: "boolean" },
+        },
+        required: ["problem", "stage", "thinkingId", "iteration", "nextStageNeeded"],
+    },
+};
 const modelServer = new MentalModelServer();
 const designPatternServer = new DesignPatternServer();
 const paradigmServer = new ProgrammingParadigmServer();
@@ -986,6 +1075,7 @@ const metacognitiveMonitoringServer = new MetacognitiveMonitoringServer();
 const scientificMethodServer = new ScientificMethodServer();
 const structuredArgumentationServer = new StructuredArgumentationServer();
 const visualReasoningServer = new VisualReasoningServer();
+const stochasticThinkingServer = new StochasticThinkingServer();
 
 const server = new Server(
     {
@@ -994,25 +1084,13 @@ const server = new Server(
     },
     {
         capabilities: {
-            tools: {
-                sequentialthinking: SEQUENTIAL_THINKING_TOOL,
-                mentalmodel: MENTAL_MODEL_TOOL,
-                designpattern: DESIGN_PATTERN_TOOL,
-                programmingparadigm: PROGRAMMING_PARADIGM_TOOL,
-                debuggingapproach: DEBUGGING_APPROACH_TOOL,
-                collaborativereasoning: COLLABORATIVE_REASONING_TOOL,
-                decisionframework: DECISION_FRAMEWORK_TOOL,
-                metacognitivemonitoring: METACOGNITIVE_MONITORING_TOOL,
-                scientificmethod: SCIENTIFIC_METHOD_TOOL,
-                structuredargumentation: STRUCTURED_ARGUMENTATION_TOOL,
-                visualreasoning: VISUAL_REASONING_TOOL,
-            },
+            tools: {},
         },
     }
 );
 
 // Request Handlers
-server.setRequestHandler(ListToolsRequestSchema, async () => ({
+server.setRequestHandler('tools/list', async () => ({
     tools: [
         SEQUENTIAL_THINKING_TOOL,
         MENTAL_MODEL_TOOL,
@@ -1025,10 +1103,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         SCIENTIFIC_METHOD_TOOL,
         STRUCTURED_ARGUMENTATION_TOOL,
         VISUAL_REASONING_TOOL,
+        STOCHASTIC_THINKING_TOOL,
     ],
 }));
 
-server.setRequestHandler(CallToolRequestSchema, async (request) => {
+server.setRequestHandler('tools/call', async (request) => {
     switch (request.params.name) {
         case "sequentialthinking": {
             const result = thinkingServer.processThought(
@@ -1037,7 +1116,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             return {
                 content: [
                     {
-                        type: "text",
+                        type: "text" as const,
                         text: JSON.stringify(result, null, 2),
                     },
                 ],
@@ -1048,50 +1127,26 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             return {
                 content: [
                     {
-                        type: "text",
+                        type: "text" as const,
                         text: JSON.stringify(result, null, 2),
                     },
                 ],
             };
         }
         case "designpattern": {
-            const result = designPatternServer.processPattern(
+            return designPatternServer.processPattern(
                 request.params.arguments
             );
-            return {
-                content: [
-                    {
-                        type: "text",
-                        text: JSON.stringify(result, null, 2),
-                    },
-                ],
-            };
         }
         case "programmingparadigm": {
-            const result = paradigmServer.processParadigm(
+            return paradigmServer.processParadigm(
                 request.params.arguments
             );
-            return {
-                content: [
-                    {
-                        type: "text",
-                        text: JSON.stringify(result, null, 2),
-                    },
-                ],
-            };
         }
         case "debuggingapproach": {
-            const result = debuggingServer.processApproach(
+            return debuggingServer.processApproach(
                 request.params.arguments
             );
-            return {
-                content: [
-                    {
-                        type: "text",
-                        text: JSON.stringify(result, null, 2),
-                    },
-                ],
-            };
         }
         case "collaborativereasoning": {
             const result =
@@ -1101,7 +1156,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             return {
                 content: [
                     {
-                        type: "text",
+                        type: "text" as const,
                         text: JSON.stringify(result, null, 2),
                     },
                 ],
@@ -1114,73 +1169,46 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             return {
                 content: [
                     {
-                        type: "text",
+                        type: "text" as const,
                         text: JSON.stringify(result, null, 2),
                     },
                 ],
             };
         }
         case "metacognitivemonitoring": {
-            const result =
-                metacognitiveMonitoringServer.processMetacognitiveMonitoring(
-                    request.params.arguments
-                );
-            return {
-                content: [
-                    {
-                        type: "text",
-                        text: JSON.stringify(result, null, 2),
-                    },
-                ],
-            };
+            return metacognitiveMonitoringServer.processMetacognitiveMonitoring(
+                request.params.arguments
+            );
         }
         case "scientificmethod": {
-            const result = scientificMethodServer.processScientificMethod(
+            return scientificMethodServer.processScientificMethod(
                 request.params.arguments
             );
-            return {
-                content: [
-                    {
-                        type: "text",
-                        text: JSON.stringify(result, null, 2),
-                    },
-                ],
-            };
         }
         case "structuredargumentation": {
-            const result =
-                structuredArgumentationServer.processStructuredArgumentation(
-                    request.params.arguments
-                );
-            return {
-                content: [
-                    {
-                        type: "text",
-                        text: JSON.stringify(result, null, 2),
-                    },
-                ],
-            };
-        }
-        case "visualreasoning": {
-            const result = visualReasoningServer.processVisualReasoning(
+            return structuredArgumentationServer.processStructuredArgumentation(
                 request.params.arguments
             );
-            return {
-                content: [
-                    {
-                        type: "text",
-                        text: JSON.stringify(result, null, 2),
-                    },
-                ],
-            };
+        }
+        case "visualreasoning": {
+            return visualReasoningServer.processVisualReasoning(
+                request.params.arguments
+            );
+        }
+        case "stochasticthinking": {
+            return stochasticThinkingServer.processStochasticThinking(
+                request.params.arguments
+            );
         }
         default:
-            throw new McpError(
-                ErrorCode.MethodNotFound,
+            throw new ProtocolError(
+                ProtocolErrorCode.MethodNotFound,
                 `Tool '${request.params.name}' not found.`
             );
     }
 });
+
+export { server };
 
 async function runServer() {
     const transport = new StdioServerTransport();
@@ -1188,7 +1216,11 @@ async function runServer() {
     console.error("Clear Thought MCP Server running on stdio");
 }
 
-runServer().catch((error) => {
-    console.error("Fatal error running server:", error);
-    process.exit(1);
-});
+// Only start when executed directly (not imported)
+const isMain = process.argv[1] && new URL(import.meta.url).pathname.endsWith(process.argv[1].replace(/\\/g, '/').split('/').pop()!);
+if (isMain) {
+    runServer().catch((error) => {
+        console.error("Fatal error running server:", error);
+        process.exit(1);
+    });
+}

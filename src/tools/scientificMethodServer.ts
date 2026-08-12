@@ -1,3 +1,4 @@
+import { CallToolResult } from '@modelcontextprotocol/server';
 import { ScientificInquiryData, HypothesisData, ExperimentData } from '../models/interfaces.js';
 import chalk from 'chalk';
 
@@ -168,7 +169,7 @@ export class ScientificMethodServer {
     };
   }
 
-  public processScientificMethod(input: unknown): { content: Array<{ type: string; text: string }>; isError?: boolean } {
+  public processScientificMethod(input: unknown): CallToolResult {
     try {
       const validatedData = this.validateInputData(input);
       const processedData: ScientificInquiryData = {
@@ -182,7 +183,7 @@ export class ScientificMethodServer {
 
       return {
         content: [{
-          type: "text",
+          type: "text" as const,
           text: JSON.stringify({
             stage: processedData.stage,
             inquiryId: processedData.inquiryId,
@@ -195,7 +196,7 @@ export class ScientificMethodServer {
     } catch (error) {
       return {
         content: [{
-          type: "text",
+          type: "text" as const,
           text: JSON.stringify({
             error: error instanceof Error ? error.message : String(error),
             status: 'failed'
