@@ -23,12 +23,12 @@
   "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29",
-    "chalk": "^5.3.0",
+    "chalk": "^6.0.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@types/node": "^20.10.5",
-    "typescript": "^5.3.3",
+    "@types/node": "^26.2.0",
+    "typescript": "^7.0.2",
     "vitest": "^4.1.10"
   }
 }
