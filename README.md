@@ -1,402 +1,178 @@
 # Clear Thought MCP Server
 
-[![smithery badge](https://smithery.ai/badge/@chirag127/clear-thought-mcp-server)](https://smithery.ai/server/@chirag127/clear-thought-mcp-server) [![Stars](https://img.shields.io/github/stars/chirag127/Clear-Thought-MCP-server?style=flat)](https://github.com/chirag127/Clear-Thought-MCP-server/stargazers) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+> Systematic thinking, mental models, and debugging approaches — as MCP tools for any AI client.
 
-**Live:** https://Clear-Thought-MCP-server.oriz.in
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/chirag127/Clear-Thought-MCP-server?style=flat)](https://github.com/chirag127/Clear-Thought-MCP-server/stargazers)
+[![Last commit](https://img.shields.io/github/last-commit/chirag127/Clear-Thought-MCP-server)](https://github.com/chirag127/Clear-Thought-MCP-server/commits)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-%3E=18-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
+[![CI](https://github.com/chirag127/Clear-Thought-MCP-server/actions/workflows/ci.yml/badge.svg)](https://github.com/chirag127/Clear-Thought-MCP-server/actions/workflows/ci.yml)
+[![smithery](https://smithery.ai/badge/@chirag127/clear-thought-mcp-server)](https://smithery.ai/server/@chirag127/clear-thought-mcp-server)
 
-A Model Context Protocol (MCP) server that provides systematic thinking, mental models, and debugging approaches for enhanced problem-solving capabilities.
+## What it is / why it exists
+
+An [MCP](https://modelcontextprotocol.io) server that gives an AI assistant a toolbox of **structured reasoning frameworks** — mental models, design patterns, systematic debugging, decision analysis, the scientific method, and more — so it reasons deliberately instead of improvising. Each mode is an explicit, inspectable tool the model calls, with typed (Zod-validated) inputs and a formatted, chain-of-thought-friendly response.
+
+Twelve tools, one server, zero required configuration.
+
+## Links
+
+- **Live MCP endpoint:** <https://clear-thought-mcp-server.oriz.in> (Streamable HTTP, MCP 2.0)
+- **GitHub Pages:** <https://chirag127.github.io/Clear-Thought-MCP-server/>
+- **Smithery:** <https://smithery.ai/server/@chirag127/clear-thought-mcp-server>
+- **Repo:** <https://github.com/chirag127/Clear-Thought-MCP-server>
+
+⭐ If this is useful, please star the repo — it helps others find it.
+
+## Architecture
+
+```mermaid
+flowchart LR
+    Client["MCP Client<br/>(Claude, Cursor, opencode, ...)"]
+    subgraph Server["clear-thought-mcp-server"]
+        direction TB
+        T1["sequentialthinking"]
+        T2["mentalmodel"]
+        T3["designpattern"]
+        T4["programmingparadigm"]
+        T5["debuggingapproach"]
+        T6["collaborativereasoning"]
+        T7["decisionframework"]
+        T8["metacognitivemonitoring"]
+        T9["scientificmethod"]
+        T10["structuredargumentation"]
+        T11["visualreasoning"]
+        T12["stochasticthinking"]
+    end
+    Client -->|"Streamable HTTP (MCP 2.0) /mcp<br/>or stdio"| Server
+    Server -->|"formatted reasoning result"| Client
+```
+
+## Tools
+
+| Tool | What it does |
+| --- | --- |
+| `sequentialthinking` | Dynamic, reflective step-by-step problem solving with revisions & branches |
+| `mentalmodel` | Apply a named model (first principles, Occam's razor, Pareto, opportunity cost, error propagation, rubber duck) |
+| `designpattern` | Software architecture patterns (modular, API integration, state, async, scalability, security, agentic) |
+| `programmingparadigm` | Reason through imperative / OO / functional / reactive / concurrent … paradigms |
+| `debuggingapproach` | Systematic debugging (binary search, reverse engineering, divide & conquer, backtracking, cause elimination, program slicing) |
+| `collaborativereasoning` | Simulate a panel of expert personas with diverse perspectives |
+| `decisionframework` | Structured decision analysis and rational choice |
+| `metacognitivemonitoring` | Self-monitor knowledge boundaries and reasoning quality |
+| `scientificmethod` | Formal hypothesis → experiment → analysis loop |
+| `structuredargumentation` | Dialectical reasoning — claims, rebuttals, synthesis |
+| `visualreasoning` | Create/manipulate diagrams and visual representations |
+| `stochasticthinking` | Probabilistic reasoning over uncertain problems |
 
 ## Features
 
-### Mental Models
+- 12 reasoning tools, each with a typed Zod input schema and formatted output
+- Two transports: **stdio** (local clients) and **Streamable HTTP** (MCP 2.0, remote)
+- Zero required configuration — no keys, no state, no external calls
+- Installable via `npx`, [Smithery](https://smithery.ai), or the hosted endpoint
 
--   First Principles Thinking
--   Opportunity Cost Analysis
--   Error Propagation Understanding
--   Rubber Duck Debugging
--   Pareto Principle
--   Occam's Razor
+## Tech stack
 
-### Design Patterns
+- **TypeScript** + **Node.js** (ESM, `>=18`)
+- [`@modelcontextprotocol/sdk`](https://github.com/modelcontextprotocol/typescript-sdk) `^1.29`
+- [`zod`](https://zod.dev) for input validation, `chalk` for formatting
+- `vitest` for tests, `tsc` build
 
--   Modular Architecture
--   API Integration Patterns
--   State Management
--   Asynchronous Processing
--   Scalability Considerations
--   Security Best Practices
--   Agentic Design Patterns
+## Repo structure
 
-### Programming Paradigms
+```
+Clear-Thought-MCP-server/
+├── src/
+│   ├── index.ts              # server bootstrap, tool registration, stdio + HTTP transports
+│   ├── models/interfaces.ts  # shared TypeScript interfaces
+│   └── tools/                # one module per reasoning tool (mentalModelServer.ts, ...)
+├── dist/                     # compiled JS (tsc output)
+├── test/                     # vitest suites
+├── Dockerfile                # container image
+├── smithery.yaml             # Smithery deploy config
+└── package.json
+```
 
--   Imperative Programming
--   Procedural Programming
--   Object-Oriented Programming
--   Functional Programming
--   Declarative Programming
--   Logic Programming
--   Event-Driven Programming
--   Aspect-Oriented Programming
--   Concurrent Programming
--   Reactive Programming
+## Quick start
 
-### Debugging Approaches
+### Run with npx (stdio)
 
--   Binary Search
--   Reverse Engineering
--   Divide and Conquer
--   Backtracking
--   Cause Elimination
--   Program Slicing
+```bash
+npx clear-thought-mcp-server
+```
 
-### Sequential Thinking
-
--   Structured thought process
--   Revision and branching support
--   Progress tracking
--   Context maintenance
-
-### Collaborative Reasoning
-
--   Multi-persona problem-solving
--   Diverse expertise integration
--   Structured debate and consensus building
--   Perspective synthesis
-
-### Decision Framework
-
--   Structured decision analysis
--   Multiple evaluation methodologies
--   Criteria weighting
--   Risk and uncertainty handling
-
-### Metacognitive Monitoring
-
--   Knowledge boundary assessment
--   Claim certainty evaluation
--   Reasoning bias detection
--   Confidence calibration
--   Uncertainty identification
-
-### Scientific Method
-
--   Structured hypothesis testing
--   Variable identification
--   Prediction formulation
--   Experimental design
--   Evidence evaluation
-
-### Structured Argumentation
-
--   Formal dialectical reasoning
--   Thesis-antithesis-synthesis
--   Argument strength analysis
--   Premise evaluation
--   Logical structure mapping
-
-### Visual Reasoning
-
--   Diagrammatic representation
--   Visual problem-solving
--   Spatial relationship analysis
--   Conceptual mapping
--   Visual insight generation
-
-## Prerequisites
-
--   Node.js 18.x or higher
--   npm 9.x or higher
-
-## Installation
-
-### Installing via Smithery
-
-To install clear-thought-mcp-server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@chirag127/clear-thought-mcp-server):
+### Install via Smithery
 
 ```bash
 npx -y @smithery/cli install @chirag127/clear-thought-mcp-server --client claude
 ```
 
-1. Clone the repository:
+### MCP client config
 
-```bash
-git clone https://github.com/chirag127/clear-thought-mcp-server.git
+Hosted (Streamable HTTP):
+
+```json
+{
+  "mcpServers": {
+    "clear-thought": {
+      "url": "https://clear-thought-mcp-server.oriz.in/mcp"
+    }
+  }
+}
 ```
 
-Then navigate to the project directory:
+Local (stdio via npx):
 
-```bash
-cd clear-thought-mcp-server
+```json
+{
+  "mcpServers": {
+    "clear-thought": {
+      "command": "npx",
+      "args": ["-y", "clear-thought-mcp-server"]
+    }
+  }
+}
 ```
 
-2. Install dependencies:
+### Run the HTTP transport yourself
 
 ```bash
 npm install
-```
-
-3. Build the project:
-
-```bash
 npm run build
+HTTP_PORT=3779 npm start   # serves Streamable HTTP at http://localhost:3779/mcp
 ```
 
-## Usage
+### Register it
 
-### Running the Server
+- **MCP Registry:** <https://registry.modelcontextprotocol.io>
+- **Smithery:** `@chirag127/clear-thought-mcp-server` — <https://smithery.ai/server/@chirag127/clear-thought-mcp-server>
 
-Start the server with:
+## Configuration
 
-```bash
-npm start
-```
+No configuration is required. Optional environment variables:
 
-This will start the MCP server using stdio transport, which can be connected to by MCP clients.
+| Variable | Purpose |
+| --- | --- |
+| `HTTP_PORT` | Port for the Streamable HTTP transport (default `3779`) |
 
-### Development Mode
+## Part of the oriz family
 
-For development with automatic reloading:
+One of ~80 sites and tools in the [oriz](https://blog.oriz.in) family. It reasons; the [Stochastic Thinking MCP Server](https://github.com/chirag127/Stochastic-Thinking-MCP-Server) handles probabilistic decision-making, and [knowledge-mcp](https://github.com/chirag127/knowledge-mcp) serves the knowledge base.
 
-```bash
-npm run dev
-```
+## Contributing
 
-### Using with MCP Clients
-
-The server can be used with any MCP-compatible client. Here are some examples:
-
-#### Using with the MCP Inspector
-
-1. Install the MCP Inspector:
-
-```bash
-npm install -g @modelcontextprotocol/inspector
-```
-
-2. Run the server:
-
-```bash
-npm start
-```
-
-3. In another terminal, connect the inspector:
-
-```bash
-mcp-inspector --stdio "node dist/index.js"
-```
-
-#### Using with LLM Applications
-
-The server can be integrated with LLM applications that support the Model Context Protocol. Refer to the MCP documentation for specific integration details.
-
-## Tool Selection Guide
-
-Each tool in the Clear Thought MCP Server has specific strengths. Here are some scenarios where each tool might be particularly useful:
-
-### Mental Models
-
-Best suited for:
-
--   Initial problem understanding
--   Breaking down complex systems
--   Analyzing trade-offs
--   Finding root causes
--   Making strategic decisions
-
-Example scenarios:
-
--   Analyzing system architecture choices
--   Evaluating competing solutions
--   Understanding error patterns
-
-### Design Patterns
-
-Best suited for:
-
--   Implementing proven solutions
--   Structuring new features
--   Ensuring maintainable code
--   Scaling applications
--   Managing technical debt
-
-Example scenarios:
-
--   Building new system components
--   Refactoring existing code
--   Implementing cross-cutting concerns
-
-### Programming Paradigms
-
-Best suited for:
-
--   Selecting appropriate coding approaches
--   Understanding language strengths
--   Optimizing for specific problem types
--   Balancing trade-offs in implementation
-
-Example scenarios:
-
--   Choosing between OOP and functional approaches
--   Implementing concurrent systems
--   Designing reactive applications
-
-### Debugging Approaches
-
-Best suited for:
-
--   Troubleshooting issues
--   Performance optimization
--   System analysis
--   Error resolution
--   Quality assurance
-
-Example scenarios:
-
--   Fixing production issues
--   Optimizing slow processes
--   Resolving integration problems
-
-### Sequential Thinking
-
-Best suited for:
-
--   Complex problem-solving
--   Multi-step analysis
--   Decision refinement
--   Process improvement
--   Comprehensive planning
-
-Example scenarios:
-
--   Planning major features
--   Analyzing system-wide changes
--   Making architectural decisions
-
-### Collaborative Reasoning
-
-Best suited for:
-
--   Complex, multi-faceted problems
--   Situations requiring diverse expertise
--   Controversial or high-stakes decisions
--   Innovation and ideation
-
-Example scenarios:
-
--   Architectural design decisions
--   Product strategy development
--   Risk assessment and mitigation
-
-### Decision Framework
-
-Best suited for:
-
--   Structured choice between alternatives
--   Risk-aware decision making
--   Multi-criteria evaluation
--   Stakeholder-sensitive decisions
-
-Example scenarios:
-
--   Technology selection
--   Resource allocation
--   Strategic planning
-
-### Metacognitive Monitoring
-
-Best suited for:
-
--   Assessing knowledge boundaries
--   Evaluating claim certainty
--   Detecting reasoning biases
--   Calibrating confidence
--   Identifying areas of uncertainty
-
-Example scenarios:
-
--   Evaluating expertise in unfamiliar domains
--   Assessing confidence in predictions
--   Identifying potential biases in analysis
--   Determining when to seek additional information
-
-### Scientific Method
-
-Best suited for:
-
--   Systematic hypothesis testing
--   Empirical investigation
--   Causal analysis
--   Evidence-based reasoning
--   Iterative refinement of understanding
-
-Example scenarios:
-
--   Investigating system behavior
--   Testing causal relationships
--   Evaluating competing explanations
--   Designing controlled experiments
-
-### Structured Argumentation
-
-Best suited for:
-
--   Formal dialectical reasoning
--   Analyzing complex debates
--   Evaluating competing positions
--   Synthesizing diverse viewpoints
--   Constructing logical arguments
-
-Example scenarios:
-
--   Evaluating the strength of arguments
--   Identifying logical fallacies
--   Constructing persuasive cases
--   Resolving conflicting perspectives
-
-### Visual Reasoning
-
-Best suited for:
-
--   Spatial problem-solving
--   Conceptual mapping
--   Pattern recognition
--   Relationship visualization
--   Complex system modeling
-
-Example scenarios:
-
--   Diagramming system architecture
--   Visualizing data relationships
--   Mapping conceptual spaces
--   Creating visual explanations
-
-Note: These are suggestions rather than rules. Tools can be used in any order or combination that best serves your needs.
-
-## Project Structure
-
-```
-clear-thought-mcp-server/
-├── dist/               # Compiled JavaScript files
-├── src/                # TypeScript source code
-│   ├── models/         # Data interfaces
-│   ├── tools/          # Tool implementations
-│   └── index.ts        # Main server entry point
-├── package.json        # Project dependencies and scripts
-├── tsconfig.json       # TypeScript configuration
-└── README.md           # Project documentation
-```
-
-## Tech Stack
-
--   TypeScript
--   Node.js
--   Model Context Protocol SDK
--   Zod (for validation)
-
-## Author
-
-Chirag Singhal ([@chirag127](https://github.com/chirag127))
+Issues and PRs welcome. Conventional commits are the changelog.
 
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE).
+
+## Author
+
+Chirag Singhal · <chirag@oriz.in> · [@chirag127](https://github.com/chirag127)
+
+## Status
+
+Stable (`v1.1.2`). Roadmap: more mental models, richer visual-reasoning output.
