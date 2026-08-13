@@ -1,4 +1,4 @@
-import { CallToolResult } from '@modelcontextprotocol/server';
+import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import { VisualOperationData } from '../models/interfaces.js';
 import chalk from 'chalk';
 
