@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/chirag127-clear-thought-mcp-server-badge.png)](https://mseep.ai/app/chirag127-clear-thought-mcp-server)
+
 # Clear Thought MCP Server
 
 > Systematic thinking, mental models, and debugging approaches — as MCP tools for any AI client.
