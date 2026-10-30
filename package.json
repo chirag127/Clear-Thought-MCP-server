@@ -22,7 +22,7 @@
   "author": "Chirag Singhal",
   "license": "MIT",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.29",
+    "@modelcontextprotocol/sdk": "^1.32.2",
     "chalk": "^5.3.0",
     "zod": "^4.4.3"
   },
