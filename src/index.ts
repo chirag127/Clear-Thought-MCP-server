@@ -23,6 +23,22 @@ import { VisualReasoningServer } from "./tools/visualReasoningServer.js";
 import { StochasticThinkingServer } from "./tools/stochasticThinkingServer.js";
 
 // ---------------------------------------------------------------------------
+// Tool-input bounds.
+//
+// The SDK's element counter counts array elements, object keys and the root
+// arguments object, so the largest schema-legal call (1,000 steps plus
+// mentalModelSchema's 5 top-level keys = 1,005 counted elements) must sit below
+// the ceiling: 1,000 + 5 + 1 = 1,006.
+// ---------------------------------------------------------------------------
+const MAX_TOOL_INPUT_ARRAY_ITEMS = 1000;
+const MAX_TOOL_INPUT_ELEMENTS = 1006;
+
+// This server parses the request body itself and hands the transport a
+// pre-parsed body, so the transport's own 4 MiB maxRequestBodySize reader never
+// runs. The same 4 MiB bound is enforced here instead.
+const MAX_REQUEST_BODY_BYTES = 4 * 1024 * 1024;
+
+// ---------------------------------------------------------------------------
 // Tool descriptions (preserved verbatim from the original definitions)
 // ---------------------------------------------------------------------------
 
@@ -163,7 +179,7 @@ const mentalModelSchema = z
             "occams_razor",
         ]),
         problem: z.string(),
-        steps: z.array(z.string()).optional(),
+        steps: z.array(z.string()).max(MAX_TOOL_INPUT_ARRAY_ITEMS).optional(),
         reasoning: z.string().optional(),
         conclusion: z.string().optional(),
     })
@@ -508,6 +524,7 @@ export function createMcpServer(): McpServer {
             capabilities: {
                 tools: {},
             },
+            maxToolInputElements: MAX_TOOL_INPUT_ELEMENTS,
         }
     );
 
@@ -675,11 +692,34 @@ async function runHttpServer() {
         res.setHeader("Access-Control-Expose-Headers", "mcp-session-id");
     };
 
+    const BODY_TOO_LARGE = Symbol("body-too-large");
+
     const readBody = (req: IncomingMessage): Promise<unknown> =>
         new Promise((resolve, reject) => {
+            const declared = Number(req.headers["content-length"]);
+            if (Number.isFinite(declared) && declared > MAX_REQUEST_BODY_BYTES) {
+                resolve(BODY_TOO_LARGE);
+                return;
+            }
             const chunks: Buffer[] = [];
-            req.on("data", (c) => chunks.push(c as Buffer));
+            let received = 0;
+            let tooLarge = false;
+            req.on("data", (c: Buffer) => {
+                if (tooLarge) {
+                    return;
+                }
+                received += c.length;
+                if (received > MAX_REQUEST_BODY_BYTES) {
+                    tooLarge = true;
+                    resolve(BODY_TOO_LARGE);
+                    return;
+                }
+                chunks.push(c);
+            });
             req.on("end", () => {
+                if (tooLarge) {
+                    return;
+                }
                 const raw = Buffer.concat(chunks).toString("utf8");
                 if (!raw) {
                     resolve(undefined);
@@ -733,6 +773,15 @@ async function runHttpServer() {
                 const transport = transports.get(sessionId)!;
                 const body =
                     req.method === "POST" ? await readBody(req) : undefined;
+                if (body === BODY_TOO_LARGE) {
+                    sendJsonError(
+                        res,
+                        413,
+                        -32000,
+                        `Payload Too Large: Request body must not exceed ${MAX_REQUEST_BODY_BYTES} bytes`
+                    );
+                    return;
+                }
                 await transport.handleRequest(req, res, body);
                 return;
             }
@@ -740,6 +789,15 @@ async function runHttpServer() {
             // New session: only valid on an initialize POST.
             if (req.method === "POST") {
                 const body = await readBody(req);
+                if (body === BODY_TOO_LARGE) {
+                    sendJsonError(
+                        res,
+                        413,
+                        -32000,
+                        `Payload Too Large: Request body must not exceed ${MAX_REQUEST_BODY_BYTES} bytes`
+                    );
+                    return;
+                }
                 if (!sessionId && isInitializeRequest(body)) {
                     const transport = new StreamableHTTPServerTransport({
                         sessionIdGenerator: () => randomUUID(),
