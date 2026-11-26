@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
-import { Client, InMemoryTransport } from "@modelcontextprotocol/client";
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { server } from '../src/index.js';
 
 vi.spyOn(console, 'error').mockImplementation(() => {});
@@ -119,9 +120,13 @@ describe('MCP server integration', () => {
     }
   });
 
-  it('CallTool unknown tool name returns McpError', async () => {
-    await expect(
-      client.callTool({ name: 'nonexistent', arguments: {} })
-    ).rejects.toThrow();
+  it('CallTool unknown tool name returns an error result', async () => {
+    // The mainstream @modelcontextprotocol/sdk surfaces an unknown tool as a
+    // CallToolResult with isError: true (rather than rejecting the promise as
+    // the experimental v2 SDK did).
+    const result = await client.callTool({ name: 'nonexistent', arguments: {} });
+    expect(result.isError).toBe(true);
+    const content = result.content as Array<{ type: string; text: string }>;
+    expect(content[0].text).toContain('nonexistent');
   });
 });

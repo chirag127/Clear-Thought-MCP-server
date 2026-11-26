@@ -5,6 +5,19 @@ All notable changes to the Clear Thought MCP Server will be documented in this f
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] - 2026-11-23
+
+### Chore
+- bump fast-uri from 3.1.5 to 3.1.9 (#27)
+- bump body-parser from 2.3.0 to 2.4.0 (#29)
+- bump ip-address from 10.5.0 to 10.7.5 (#30)
+- bump zod from 4.4.3 to 4.6.7 (#31)
+- bump @hono/node-server from 2.1.0 to 2.1.6 (#32)
+
+## [Unreleased] - 2026-08-13
+### Changed
+- feat(mcp): migrate to mainstream @modelcontextprotocol/sdk + add Streamable HTTP (MCP 2.0)
+
 ## [Unreleased] - 2026-08-12
 ### Changed
 - chore(deps): add Dependabot config; ignore @chirag127/* path deps
